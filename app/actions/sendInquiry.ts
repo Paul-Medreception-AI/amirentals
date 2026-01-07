@@ -38,7 +38,7 @@ export async function sendInquiry(formData: FormData) {
     });
 
     const sendResult = await resend.emails.send({
-      from: "AMI Rentals <inquiries@amirentals.com>",
+      from: "AMI Rentals <inquiries@baytobeachhouse.com>",
       to: ["amirentals2020@gmail.com"],
       replyTo: safeEmail || undefined,
       subject: `New AMI Rentals Inquiry: ${safeDates || "(no dates provided)"}`,
