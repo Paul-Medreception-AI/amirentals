@@ -30,11 +30,11 @@ export default function InquiryForm() {
         setMessage(null);
 
         startTransition(async () => {
-          try {
-            window.dataLayer = window.dataLayer ?? [];
-            window.dataLayer.push({
-              event: "direct_inquiry",
-              event_category: "booking",
+        try {
+          window.dataLayer = window.dataLayer ?? [];
+          window.dataLayer.push({
+            event: "direct_inquiry",
+            event_category: "booking",
               event_label: "Direct Inquiry Submitted",
             });
 
@@ -47,6 +47,13 @@ export default function InquiryForm() {
           }
 
           try {
+            const formData = new FormData(formElement);
+            console.log("[InquiryForm] submitting with", {
+              name: formData.get("name"),
+              email: formData.get("email"),
+              dates: formData.get("dates"),
+              guests: formData.get("guests"),
+            });
             const result = await sendInquiry(formData);
             console.log("[InquiryForm] sendInquiry result", result);
 

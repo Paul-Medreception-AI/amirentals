@@ -30,6 +30,7 @@ export async function sendInquiry(formData: FormData) {
   try {
     console.log("[sendInquiry] sending email via Resend", {
       hasApiKey: Boolean(apiKey),
+      apiKeyLength: apiKey?.length ?? 0,
       safeName,
       safeEmail,
       safeDates,
