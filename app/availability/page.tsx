@@ -1,5 +1,3 @@
-import { sendInquiry } from "@/app/actions/sendInquiry";
-
 import InquiryForm from "@/components/InquiryForm";
 import TrackedLink from "@/components/TrackedLink";
 
@@ -65,7 +63,7 @@ export default function AvailabilityPage() {
               For fastest confirmation, availability is synced with VRBO.
               Prefer booking direct? Send us your dates and we’ll confirm options.
             </p>
-            <InquiryForm action={sendInquiry} />
+            <InquiryForm />
           </div>
         </div>
       </section>
