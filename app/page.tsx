@@ -13,7 +13,7 @@ const featureList = [
   { emoji: "🛏️", label: "Three bedrooms", description: "Comfortable space for families or groups." },
   { emoji: "�", label: "Private baths", description: "Each bedroom includes its own ensuite for three couples." },
   { emoji: "🪑", label: "Game-ready lounge", description: "Pool table + dart board for friendly competition." },
-  { emoji: "�📶", label: "High-speed Wi-Fi", description: "Stream and work with confidence." },
+  { emoji: "�", label: "High-speed Wi-Fi", description: "Stream and work with confidence." },
   { emoji: "☀️", label: "Air-conditioned comfort", description: "Stay cool after a day in the sun." },
   { emoji: "🚗", label: "Off-street parking", description: "Room for vehicles without the squeeze." },
 ];
@@ -33,14 +33,15 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="mx-auto w-full max-w-5xl px-6 text-white">
-          <p className="text-sm uppercase tracking-[0.3em] text-sky-200">Bradenton Beach · Anna Maria Island</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-white bg-black/40 px-4 py-1 rounded-full shadow-lg inline-flex">
+            Bradenton Beach · Anna Maria Island
+          </p>
           <h1 className="mb-4 text-4xl font-bold drop-shadow-lg md:text-5xl">
-            AMI Rentals Beach House — Steps From the Gulf with a Pool
+            Poolside hideaway steps from the Gulf in Bradenton Beach
           </h1>
-            <p className="mb-6 max-w-2xl text-lg drop-shadow md:text-xl">
-              A bright, walkable island home just blocks from the Gulf of Mexico, restaurants, shops, and the free Anna
-              Maria Island trolley.
-            </p>
+          <p className="mb-6 max-w-2xl text-lg drop-shadow md:text-xl">
+            Slip between sun-soaked pool sessions, Pine Avenue bites, and the free trolley without unpacking the car.
+          </p>
             <p className="text-sm uppercase tracking-wide text-slate-200">
               Each bedroom has an ensuite bathroom—perfect for three couples or a family of six.
             </p>
