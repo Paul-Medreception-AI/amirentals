@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
+import { sendInquiry } from "@/app/actions/sendInquiry";
 
 declare global {
   interface Window {
@@ -12,6 +13,11 @@ declare global {
 export default function InquiryForm() {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [dates, setDates] = useState("");
+  const [guests, setGuests] = useState("");
+  const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement | null>(null);
 
   return (
@@ -20,41 +26,50 @@ export default function InquiryForm() {
       onSubmit={(event) => {
         event.preventDefault();
         const formElement = formRef.current ?? event.currentTarget;
-        const formData = new FormData(formElement);
         setStatus("pending");
         setMessage(null);
 
-        try {
-          window.dataLayer = window.dataLayer ?? [];
-          window.dataLayer.push({
-            event: "direct_inquiry",
-            event_category: "booking",
-            event_label: "Direct Inquiry Submitted",
-          });
+        startTransition(async () => {
+          try {
+            window.dataLayer = window.dataLayer ?? [];
+            window.dataLayer.push({
+              event: "direct_inquiry",
+              event_category: "booking",
+              event_label: "Direct Inquiry Submitted",
+            });
 
-          window.gtag?.("event", "direct_inquiry", {
-            event_category: "booking",
-            event_label: "Direct Inquiry Submitted",
-          });
-        } catch {
-          // ignore
-        }
+            window.gtag?.("event", "direct_inquiry", {
+              event_category: "booking",
+              event_label: "Direct Inquiry Submitted",
+            });
+          } catch {
+            // ignore
+          }
 
-        const safeName = (formData.get("name") || "").toString();
-        const safeEmail = (formData.get("email") || "").toString();
-        const safeDates = (formData.get("dates") || "").toString();
-        const safeGuests = (formData.get("guests") || "").toString();
+          try {
+            const result = await sendInquiry(formData);
+            console.log("[InquiryForm] sendInquiry result", result);
 
-        const subject = encodeURIComponent(`AMI Rentals Inquiry: ${safeDates || "Dates not provided"}`);
-        const body = encodeURIComponent(
-          `Name: ${safeName}\nEmail: ${safeEmail}\nDates: ${safeDates}\nGuests: ${safeGuests}`
-        );
-
-        window.location.href = `mailto:amirentals2020@gmail.com?subject=${subject}&body=${body}`;
-
-        setStatus("success");
-        setMessage("Opening your email app. If it doesn't open, email amirentals2020@gmail.com with your dates.");
-        formElement?.reset();
+            if (result?.ok) {
+              setStatus("success");
+              setMessage("Thanks! Your request was sent. We'll reply from amirentals2020@gmail.com.");
+              formElement?.reset();
+              setName("");
+              setEmail("");
+              setDates("");
+              setGuests("");
+            } else {
+              setStatus("error");
+              setMessage(
+                result?.error || "Something went wrong. Please email amirentals2020@gmail.com with your details."
+              );
+            }
+          } catch (err) {
+            console.error("[InquiryForm] unexpected error", err);
+            setStatus("error");
+            setMessage("Something went wrong. Please email amirentals2020@gmail.com with your details.");
+          }
+        });
       }}
       ref={formRef}
     >
@@ -63,6 +78,8 @@ export default function InquiryForm() {
         placeholder="Your name"
         required
         className="w-full border px-4 py-3 rounded-md"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
       <input
         name="email"
@@ -70,22 +87,29 @@ export default function InquiryForm() {
         placeholder="Email"
         required
         className="w-full border px-4 py-3 rounded-md"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <input
         name="dates"
         placeholder="Preferred dates"
         className="w-full border px-4 py-3 rounded-md"
+        value={dates}
+        onChange={(e) => setDates(e.target.value)}
       />
       <input
         name="guests"
         placeholder="Number of guests"
         className="w-full border px-4 py-3 rounded-md"
+        value={guests}
+        onChange={(e) => setGuests(e.target.value)}
       />
       <button
         type="submit"
-        className="w-full bg-black text-white py-3 rounded-md font-semibold"
+        disabled={isPending}
+        className="w-full bg-black text-white py-3 rounded-md font-semibold disabled:opacity-70"
       >
-        Email Availability Request
+        {isPending ? "Sending..." : "Request Availability"}
       </button>
       {message ? (
         <p

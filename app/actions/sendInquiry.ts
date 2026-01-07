@@ -12,10 +12,10 @@ export async function sendInquiry(formData: FormData) {
 
   if (!apiKey) {
     console.error("RESEND_API_KEY is missing; inquiry email not sent", {
-      name,
-      email,
-      dates,
-      guests,
+      hasName: Boolean(name),
+      hasEmail: Boolean(email),
+      hasDates: Boolean(dates),
+      hasGuests: Boolean(guests),
     });
     return { ok: false, error: "Email service not configured." };
   }
@@ -28,6 +28,14 @@ export async function sendInquiry(formData: FormData) {
   const safeGuests = typeof guests === "string" ? guests : "";
 
   try {
+    console.log("[sendInquiry] sending email via Resend", {
+      hasApiKey: Boolean(apiKey),
+      safeName,
+      safeEmail,
+      safeDates,
+      safeGuests,
+    });
+
     await resend.emails.send({
       from: "AMI Rentals <inquiries@amirentals.com>",
       to: ["amirentals2020@gmail.com"],
@@ -46,5 +54,6 @@ export async function sendInquiry(formData: FormData) {
     return { ok: false, error: "Failed to send message. Please email amirentals2020@gmail.com directly." };
   }
 
+  console.log("[sendInquiry] email sent successfully");
   return { ok: true };
 }
