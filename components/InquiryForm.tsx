@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 declare global {
   interface Window {
@@ -17,13 +17,15 @@ export default function InquiryForm({ action }: InquiryFormProps) {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   return (
     <form
       className="max-w-xl mx-auto space-y-4"
       onSubmit={(event) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+        const formElement = formRef.current ?? event.currentTarget;
+        const formData = new FormData(formElement);
         setStatus("pending");
         setMessage(null);
 
@@ -49,13 +51,14 @@ export default function InquiryForm({ action }: InquiryFormProps) {
           if (result?.ok) {
             setStatus("success");
             setMessage("Thanks! Your request was sent. We'll reply from amirentals2020@gmail.com.");
-            event.currentTarget.reset();
+            formElement?.reset();
           } else {
             setStatus("error");
             setMessage(result?.error || "Something went wrong. Please email amirentals2020@gmail.com.");
           }
         });
       }}
+      ref={formRef}
     >
       <input
         name="name"
