@@ -37,7 +37,7 @@ export async function sendInquiry(formData: FormData) {
       safeGuests,
     });
 
-    await resend.emails.send({
+    const sendResult = await resend.emails.send({
       from: "AMI Rentals <inquiries@amirentals.com>",
       to: ["amirentals2020@gmail.com"],
       replyTo: safeEmail || undefined,
@@ -50,6 +50,15 @@ export async function sendInquiry(formData: FormData) {
         <p><strong>Guests:</strong> ${safeGuests}</p>
       `,
     });
+
+    console.log("[sendInquiry] Resend sendResult", sendResult);
+
+    if (sendResult?.error) {
+      return {
+        ok: false,
+        error: `Resend error: ${sendResult.error.message || "unknown error"}. Please email amirentals2020@gmail.com.`,
+      };
+    }
   } catch (error) {
     console.error("Failed to send AMI Rentals inquiry email", error);
     return { ok: false, error: "Failed to send message. Please email amirentals2020@gmail.com directly." };
