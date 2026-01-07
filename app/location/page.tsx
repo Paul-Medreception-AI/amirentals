@@ -54,7 +54,7 @@ export default function LocationPage() {
             <div className="h-[400px] w-full overflow-hidden rounded-lg border">
               <iframe
                 title="AMI Rentals Location"
-                src="https://www.google.com/maps?q=Bradenton+Beach,+FL&output=embed"
+                src="https://www.google.com/maps?q=108+12th+St+N,+Bradenton+Beach,+FL&output=embed"
                 className="h-full w-full"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
