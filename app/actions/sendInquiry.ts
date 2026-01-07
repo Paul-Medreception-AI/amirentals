@@ -17,7 +17,7 @@ export async function sendInquiry(formData: FormData) {
       dates,
       guests,
     });
-    return;
+    return { ok: false, error: "Email service not configured." };
   }
 
   const resend = new Resend(apiKey);
@@ -43,5 +43,8 @@ export async function sendInquiry(formData: FormData) {
     });
   } catch (error) {
     console.error("Failed to send AMI Rentals inquiry email", error);
+    return { ok: false, error: "Failed to send message. Please email amirentals2020@gmail.com directly." };
   }
+
+  return { ok: true };
 }

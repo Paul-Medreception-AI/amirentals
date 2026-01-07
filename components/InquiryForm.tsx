@@ -1,6 +1,6 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { useState, useTransition } from "react";
 
 declare global {
   interface Window {
@@ -10,30 +10,51 @@ declare global {
 }
 
 type InquiryFormProps = {
-  action: (formData: FormData) => void | Promise<void>;
+  action: (formData: FormData) => Promise<{ ok: boolean; error?: string } | undefined>;
 };
 
 export default function InquiryForm({ action }: InquiryFormProps) {
+  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
+  const [message, setMessage] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
   return (
     <form
-      action={action}
       className="max-w-xl mx-auto space-y-4"
-      onSubmit={() => {
-        try {
-          window.dataLayer = window.dataLayer ?? [];
-          window.dataLayer.push({
-            event: "direct_inquiry",
-            event_category: "booking",
-            event_label: "Direct Inquiry Submitted",
-          });
+      onSubmit={(event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        setStatus("pending");
+        setMessage(null);
 
-          window.gtag?.("event", "direct_inquiry", {
-            event_category: "booking",
-            event_label: "Direct Inquiry Submitted",
-          });
-        } catch {
-          // ignore
-        }
+        startTransition(async () => {
+          try {
+            window.dataLayer = window.dataLayer ?? [];
+            window.dataLayer.push({
+              event: "direct_inquiry",
+              event_category: "booking",
+              event_label: "Direct Inquiry Submitted",
+            });
+
+            window.gtag?.("event", "direct_inquiry", {
+              event_category: "booking",
+              event_label: "Direct Inquiry Submitted",
+            });
+          } catch {
+            // ignore
+          }
+
+          const result = await action(formData);
+
+          if (result?.ok) {
+            setStatus("success");
+            setMessage("Thanks! Your request was sent. We'll reply from amirentals2020@gmail.com.");
+            event.currentTarget.reset();
+          } else {
+            setStatus("error");
+            setMessage(result?.error || "Something went wrong. Please email amirentals2020@gmail.com.");
+          }
+        });
       }}
     >
       <input
@@ -61,10 +82,20 @@ export default function InquiryForm({ action }: InquiryFormProps) {
       />
       <button
         type="submit"
-        className="w-full bg-black text-white py-3 rounded-md font-semibold"
+        disabled={isPending}
+        className="w-full bg-black text-white py-3 rounded-md font-semibold disabled:opacity-70"
       >
-        Request Availability
+        {isPending ? "Sending..." : "Request Availability"}
       </button>
+      {message ? (
+        <p
+          className={`text-sm ${
+            status === "success" ? "text-green-700" : "text-red-700"
+          }`}
+        >
+          {message}
+        </p>
+      ) : null}
     </form>
   );
 }
