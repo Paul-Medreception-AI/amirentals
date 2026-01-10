@@ -203,13 +203,6 @@ export default function AvailabilityCalendar({ selection, onSelectionChange }: A
                 }
 
                 setSelection({ startIso: start, endIso: iso });
-                if (typeof window !== "undefined") {
-                  const shouldAutoScroll = window.matchMedia("(max-width: 1023px)").matches;
-                  if (shouldAutoScroll) {
-                    const el = document.getElementById("inquiry");
-                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }
-                }
               }}
             />
           ))}
