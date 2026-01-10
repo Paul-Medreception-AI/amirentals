@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { sendInquiry } from "@/app/actions/sendInquiry";
 
 declare global {
@@ -10,7 +10,11 @@ declare global {
   }
 }
 
-export default function InquiryForm() {
+type InquiryFormProps = {
+  prefillDates?: string;
+};
+
+export default function InquiryForm({ prefillDates }: InquiryFormProps) {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -19,6 +23,11 @@ export default function InquiryForm() {
   const [guests, setGuests] = useState("");
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement | null>(null);
+
+  useEffect(() => {
+    if (!prefillDates) return;
+    setDates(prefillDates);
+  }, [prefillDates]);
 
   return (
     <form
@@ -30,11 +39,11 @@ export default function InquiryForm() {
         setMessage(null);
 
         startTransition(async () => {
-        try {
-          window.dataLayer = window.dataLayer ?? [];
-          window.dataLayer.push({
-            event: "direct_inquiry",
-            event_category: "booking",
+          try {
+            window.dataLayer = window.dataLayer ?? [];
+            window.dataLayer.push({
+              event: "direct_inquiry",
+              event_category: "booking",
               event_label: "Direct Inquiry Submitted",
             });
 

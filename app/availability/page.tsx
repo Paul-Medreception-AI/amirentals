@@ -1,5 +1,5 @@
-import InquiryForm from "@/components/InquiryForm";
 import TrackedLink from "@/components/TrackedLink";
+import AvailabilityPlanner from "@/components/AvailabilityPlanner";
 
 export default function AvailabilityPage() {
   return (
@@ -9,16 +9,18 @@ export default function AvailabilityPage() {
           <h1 className="text-4xl font-bold mb-6">Availability & Booking</h1>
 
           <p className="text-lg mb-10">
-            AMI Rentals Beach House books quickly, especially during peak season. Availability is kept up to date
-            through our primary booking platform.
+            AMI Rentals Beach House books quickly, especially during peak season. The calendar below is updated daily
+            with our latest reserved dates.
           </p>
+
+          <AvailabilityPlanner />
 
           <div className="space-y-8 text-lg">
             <div>
               <h2 className="text-2xl font-semibold mb-2">How to Check Availability</h2>
               <p>
-                The fastest way to see available dates is through our VRBO
-                calendar, which reflects real-time availability.
+                Use the calendar above to see which dates are already reserved.
+                If you prefer, you can also cross-check availability on VRBO.
               </p>
             </div>
 
@@ -58,13 +60,6 @@ export default function AvailabilityPage() {
             </a>
           </div>
 
-          <div id="inquiry" className="mt-14">
-            <p className="text-gray-600 text-sm max-w-xl">
-              For fastest confirmation, availability is synced with VRBO.
-              Prefer booking direct? Send us your dates and we’ll confirm options.
-            </p>
-            <InquiryForm />
-          </div>
         </div>
       </section>
     </main>
