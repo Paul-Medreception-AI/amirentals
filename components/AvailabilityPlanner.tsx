@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 import InquiryForm from "@/components/InquiryForm";
@@ -28,11 +28,12 @@ function buildVrboUrl({
   return url.toString();
 }
 
-function isoToMdy(value: string) {
+function isoToUnixSeconds(value: string) {
   const m = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return null;
   const [, yyyy, mm, dd] = m;
-  return `${Number(mm)}/${Number(dd)}/${yyyy}`;
+  const unixMs = Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd));
+  return Math.floor(unixMs / 1000);
 }
 
 function buildBeachRentalsUrl({
@@ -42,59 +43,19 @@ function buildBeachRentalsUrl({
   startIso: string;
   endIso: string;
 }) {
-  const arrive = isoToMdy(startIso);
-  const depart = isoToMdy(endIso);
-  const url = new URL("https://www.beachrentals.mobi/vacation-rentals/rental/10812thSt/");
-  if (arrive) url.searchParams.set("arrive_date", arrive);
-  if (depart) url.searchParams.set("depart_date", depart);
-  url.searchParams.set("newsearch", "1");
+  const arrive = isoToUnixSeconds(startIso);
+  const depart = isoToUnixSeconds(endIso);
+  const nights = nightsBetween(startIso, endIso);
+  const url = new URL("https://www.beachrentals.mobi/vacation-rentals/checkout/");
+  url.searchParams.set("id", "186");
+  url.searchParams.set("quote", "yes");
+  url.searchParams.set("locid", "1");
+  if (arrive) url.searchParams.set("arr", String(arrive));
+  if (depart) url.searchParams.set("depart", String(depart));
+  if (nights) url.searchParams.set("nights", String(nights));
+  url.searchParams.set("persons", "1");
   return url.toString();
 }
-
-function formatMoney(value: unknown) {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(value);
-  }
-  if (typeof value === "string") {
-    const cleaned = value.replace(/[^0-9.\-]/g, "");
-    const n = Number(cleaned);
-    if (Number.isFinite(n)) {
-      return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(n);
-    }
-  }
-  return null;
-}
-
-function getQuoteTotal(data: unknown): number | null {
-  if (!data || typeof data !== "object") return null;
-  const obj = data as Record<string, unknown>;
-
-  const candidates: Array<unknown> = [
-    obj.total,
-    obj.Total,
-    obj.grandTotal,
-    obj.GrandTotal,
-    obj.amount,
-    obj.Amount,
-  ];
-
-  for (const c of candidates) {
-    const n = typeof c === "number" ? c : typeof c === "string" ? Number(c) : NaN;
-    if (Number.isFinite(n)) return n;
-  }
-
-  if ("data" in obj) {
-    return getQuoteTotal(obj.data);
-  }
-
-  return null;
-}
-
-type QuoteState =
-  | { state: "idle" }
-  | { state: "loading" }
-  | { state: "ready"; total: number | null; raw: unknown }
-  | { state: "error"; message: string };
 
 function nightsBetween(startIso: string, endIso: string) {
   const start = new Date(`${startIso}T00:00:00`);
@@ -110,7 +71,6 @@ function isValidIsoDate(value: string) {
 export default function AvailabilityPlanner() {
   const [selectedStartIso, setSelectedStartIso] = useState<string | null>(null);
   const [selectedEndIso, setSelectedEndIso] = useState<string | null>(null);
-  const [quote, setQuote] = useState<QuoteState>({ state: "idle" });
 
   const prefillDates = useMemo(() => {
     if (!selectedStartIso || !selectedEndIso) return "";
@@ -130,45 +90,6 @@ export default function AvailabilityPlanner() {
   const nights = useMemo(() => {
     if (!selectedStartIso || !selectedEndIso) return 0;
     return nightsBetween(selectedStartIso, selectedEndIso);
-  }, [selectedStartIso, selectedEndIso]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function run() {
-      if (!selectedStartIso || !selectedEndIso) {
-        setQuote({ state: "idle" });
-        return;
-      }
-
-      setQuote({ state: "loading" });
-
-      try {
-        const url = new URL("/api/quote", window.location.origin);
-        url.searchParams.set("start", selectedStartIso);
-        url.searchParams.set("end", selectedEndIso);
-
-        const res = await fetch(url.toString(), { method: "GET" });
-        const json = (await res.json()) as any;
-
-        if (!res.ok || !json?.ok) {
-          const msg = json?.message || "Failed to load quote.";
-          if (!cancelled) setQuote({ state: "error", message: msg });
-          return;
-        }
-
-        const raw = json?.data;
-        const total = getQuoteTotal(raw);
-        if (!cancelled) setQuote({ state: "ready", total, raw });
-      } catch {
-        if (!cancelled) setQuote({ state: "error", message: "Failed to load quote." });
-      }
-    }
-
-    run();
-    return () => {
-      cancelled = true;
-    };
   }, [selectedStartIso, selectedEndIso]);
 
   function setStart(next: string) {
@@ -259,19 +180,7 @@ export default function AvailabilityPlanner() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-xs font-semibold text-slate-600">Estimated total</div>
-                    {quote.state === "idle" ? (
-                      <div className="mt-1 text-sm text-slate-600">Select dates to see pricing.</div>
-                    ) : quote.state === "loading" ? (
-                      <div className="mt-1 text-sm text-slate-600">Loading…</div>
-                    ) : quote.state === "error" ? (
-                      <div className="mt-1 text-sm text-slate-600">
-                        Pricing will show during checkout. Tap “Book these dates”.
-                      </div>
-                    ) : (
-                      <div className="mt-1 text-2xl font-semibold text-slate-900">
-                        {quote.total !== null ? formatMoney(quote.total) : "—"}
-                      </div>
-                    )}
+                    <div className="mt-1 text-sm text-slate-600">Pricing will show during checkout.</div>
                   </div>
 
                   <div className="text-right">
@@ -365,19 +274,7 @@ export default function AvailabilityPlanner() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-xs font-semibold text-slate-600">Estimated total</div>
-                    {quote.state === "idle" ? (
-                      <div className="mt-1 text-sm text-slate-600">Select dates to see pricing.</div>
-                    ) : quote.state === "loading" ? (
-                      <div className="mt-1 text-sm text-slate-600">Loading…</div>
-                    ) : quote.state === "error" ? (
-                      <div className="mt-1 text-sm text-slate-600">
-                        Pricing will show during checkout. Click “Book these dates”.
-                      </div>
-                    ) : (
-                      <div className="mt-1 text-2xl font-semibold text-slate-900">
-                        {quote.total !== null ? formatMoney(quote.total) : "—"}
-                      </div>
-                    )}
+                    <div className="mt-1 text-sm text-slate-600">Pricing will show during checkout.</div>
                   </div>
 
                   <div className="text-right">
