@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "./Nav";
 import MobileCTA from "@/components/MobileCTA";
+import Footer from "@/components/Footer";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -40,8 +41,8 @@ export const metadata: Metadata = {
   description:
     "3-bedroom Anna Maria Island beach house with pool, walkable Gulf access, modern amenities, and off-street parking.",
   icons: {
-    icon: [{ url: "/front.avif", type: "image/avif" }],
-    apple: [{ url: "/front.avif", type: "image/avif" }],
+    icon: [{ url: "/BaytoBeachLogo.png", type: "image/png" }],
+    apple: [{ url: "/BaytoBeachLogo.png", type: "image/png" }],
   },
   openGraph: {
     title: "AMI Rentals Beach House — Bradenton Beach, FL",
@@ -102,6 +103,7 @@ gtag('config', 'G-SL24N61JYV');`,
         </noscript>
         <Nav />
         <div className="pt-16 pb-16 md:pb-0">{children}</div>
+        <Footer />
         <MobileCTA />
       </body>
     </html>
