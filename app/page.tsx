@@ -20,8 +20,10 @@ const featureList = [
 
 export default function HomePage() {
   return (
-    <main className="bg-white text-slate-900">
+    <main className="bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
       <section className="relative h-[70vh] min-h-[520px]">
+        <div className="pointer-events-none absolute -left-24 -top-24 z-10 h-72 w-72 rounded-full bg-sky-300/40 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -bottom-24 z-10 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl" />
         <Image
           src={heroImages[0]}
           alt="AMI Rentals Beach House poolside"
@@ -33,9 +35,17 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="mx-auto w-full max-w-5xl px-6 text-white">
-          <p className="text-sm uppercase tracking-[0.3em] text-white bg-black/40 px-4 py-1 rounded-full shadow-lg inline-flex">
-            Bradenton Beach · Anna Maria Island
-          </p>
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <p className="inline-flex rounded-full bg-black/40 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white shadow-lg">
+              Bradenton Beach · Anna Maria Island
+            </p>
+            <p className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+              No pets
+            </p>
+            <p className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+              Heated pool
+            </p>
+          </div>
           <h1 className="mb-4 text-4xl font-bold drop-shadow-lg md:text-5xl">
             Poolside hideaway steps from the Gulf in Bradenton Beach
           </h1>
@@ -45,19 +55,25 @@ export default function HomePage() {
             <p className="text-sm uppercase tracking-wide text-slate-200">
               Each bedroom has an ensuite bathroom—perfect for three couples or a family of six.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3">
               <TrackedLink
                 href="https://www.vrbo.com/9486364ha"
                 eventLabel="VRBO Calendar"
-                className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-black/30 transition hover:bg-slate-100"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-black/30 transition hover:bg-slate-100"
               >
                 View VRBO Calendar
               </TrackedLink>
               <a
                 href="#availability"
-                className="rounded-md border border-white/60 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+                className="rounded-full border border-white/60 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/15"
               >
                 Book Direct &amp; Save
+              </a>
+              <a
+                href="/pool"
+                className="rounded-full border border-white/60 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:border-white hover:bg-white/15"
+              >
+                Pool Pages
               </a>
             </div>
           </div>
@@ -94,7 +110,7 @@ export default function HomePage() {
             {featureList.map(({ emoji, label, description }) => (
               <div
                 key={label}
-                className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-6 shadow-sm shadow-slate-900/5"
+                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300"
               >
                 <p className="text-2xl">{emoji}</p>
                 <h3 className="mt-4 text-xl font-semibold text-slate-900">{label}</h3>
