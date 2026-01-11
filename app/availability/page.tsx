@@ -1,5 +1,6 @@
-import TrackedLink from "@/components/TrackedLink";
 import AvailabilityPlanner from "@/components/AvailabilityPlanner";
+import InquiryForm from "@/components/InquiryForm";
+import TrackedLink from "@/components/TrackedLink";
 
 export default function AvailabilityPage() {
   return (
@@ -58,6 +59,16 @@ export default function AvailabilityPage() {
             >
               Contact Us to Book Direct
             </a>
+          </div>
+
+          <div id="inquiry" className="mt-14">
+            <p className="text-gray-600 text-sm max-w-xl">
+              For fastest confirmation, availability is synced with VRBO.
+              Prefer booking direct? Send us your dates and we’ll confirm options.
+            </p>
+            <div className="mt-4">
+              <InquiryForm />
+            </div>
           </div>
 
         </div>
