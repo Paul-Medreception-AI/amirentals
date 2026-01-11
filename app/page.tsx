@@ -11,9 +11,9 @@ const featureList = [
   { emoji: "🍽️", label: "Close to restaurants", description: "Pine Avenue dining and waterfront seafood." },
   { emoji: "🛴", label: "Free island trolley", description: "Hop on the island shuttle nearby." },
   { emoji: "🛏️", label: "Three bedrooms", description: "Comfortable space for families or groups." },
-  { emoji: "�", label: "Private baths", description: "Each bedroom includes its own ensuite for three couples." },
+  { emoji: "🛁", label: "Private baths", description: "Each bedroom includes its own ensuite for three couples." },
   { emoji: "🪑", label: "Game-ready lounge", description: "Pool table + dart board for friendly competition." },
-  { emoji: "�", label: "High-speed Wi-Fi", description: "Stream and work with confidence." },
+  { emoji: "📶", label: "High-speed Wi-Fi", description: "Stream and work with confidence." },
   { emoji: "☀️", label: "Air-conditioned comfort", description: "Stay cool after a day in the sun." },
   { emoji: "🚗", label: "Off-street parking", description: "Room for vehicles without the squeeze." },
 ];
