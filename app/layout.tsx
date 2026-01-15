@@ -41,8 +41,8 @@ export const metadata: Metadata = {
   description:
     "3-bedroom Anna Maria Island beach house with pool, walkable Gulf access, modern amenities, and off-street parking.",
   icons: {
-    icon: [{ url: "/BaytoBeachLogo.png", type: "image/png" }],
-    apple: [{ url: "/BaytoBeachLogo.png", type: "image/png" }],
+    icon: [{ url: "/FaviconBaytoBeach.png", type: "image/png" }],
+    apple: [{ url: "/FaviconBaytoBeach.png", type: "image/png" }],
   },
   openGraph: {
     title: "AMI Rentals Beach House — Bradenton Beach, FL",
