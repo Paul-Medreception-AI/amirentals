@@ -48,6 +48,40 @@ export const POOL_PAGES: PoolPage[] = [
     collection: "pool",
   },
   {
+    slug: "beach-club-view",
+    metaTitle: "Beach Club View Rentals with Private Pool | Bay to Beach House (AMI Rentals)",
+    metaDescription:
+      "Wake up to Beach Club views plus a private pool. Book a pristine, no-pets-allowed luxury rental through AMI Rentals for resort-style outdoor living.",
+    h1: "Beach Club View Rentals with Private Pool (AMI Rentals)",
+    intro: [
+      "Guests often search for a “beach club view” because they want that elevated Gulf vibe even while they’re poolside.",
+      "These BayToBeachHouse.com stays keep the resort feeling without shared elevators, loud neighbors, or crowded decks.",
+    ],
+    brandPositioning: [
+      "BayToBeachHouse.com is AMI Rentals’ no-pets portfolio—pristine, allergy-friendly, HOA-grade luxury.",
+      "Beach Club views plus private pool time give you the aspirational look without sacrificing privacy.",
+      "Every outdoor zone is designed for calm mornings, sun-soaked afternoons, and breezy evenings.",
+    ],
+    localContext: [
+      "Anna Maria Island’s Beach Club stretch offers iconic Gulf light, especially at sunrise and sunset.",
+      "Walk to the sand for shelling, then reset with a private swim away from crowds.",
+      "Evenings bring pastel skies you can enjoy from the pool deck or upstairs balcony.",
+    ],
+    highlights: [
+      "Beach Club-inspired views without hotel crowds",
+      "Private heated pool maintained to HOA-grade standards",
+      "No-pets policy supports pristine, allergy-friendly stays",
+    ],
+    internalLinks: [
+      { href: "/location", label: "Location" },
+      { href: "/photos", label: "Photos" },
+      { href: "/availability", label: "Availability" },
+      { href: "/faq", label: "FAQ" },
+    ],
+    cta: "Pair iconic Beach Club scenery with a private pool—check availability through AMI Rentals at Bay to Beach House.",
+    collection: "pool",
+  },
+  {
     slug: "private-pool",
     metaTitle: "Bradenton Beach Homes with Private Pool (No Pets) | Bay to Beach House",
     metaDescription:
